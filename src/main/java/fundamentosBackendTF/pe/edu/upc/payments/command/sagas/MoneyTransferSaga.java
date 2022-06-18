@@ -14,8 +14,8 @@ import org.axonframework.spring.stereotype.Saga;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
-
-@Saga
+/*
+* @Saga
 public class MoneyTransferSaga {
     private String fromAccountId;
     private String toAccountId;
@@ -61,3 +61,8 @@ public class MoneyTransferSaga {
         commandGateway.send(command);
     }
 }
+*
+*
+*
+* */
+
