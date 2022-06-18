@@ -9,16 +9,16 @@ import org.springframework.context.annotation.Import;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @SpringBootApplication
-//@Import({ AxonConfig.class })
+@Import({ AxonConfig.class })
 public class Application {
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
-/*
+
 	@Bean
 	@LoadBalanced
-	public WebClient.Builder loadBalanceWebClientBuilder(){return WebClient.builder();}
-	*/
-
+	public WebClient.Builder loadBalancedWebClientBuilder() {
+		return WebClient.builder();
+	}
 }

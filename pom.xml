@@ -15,7 +15,7 @@
 	<description>Projecto for fundamentals arquitecture course at UPC.</description>
 	<properties>
 		<java.version>11</java.version>
-		<axon.version>4.5.9</axon.version>
+		<axon.version>4.5.10</axon.version>
 		<spring-cloud.version>2021.0.2</spring-cloud.version>
 	</properties>
 	<dependencies>

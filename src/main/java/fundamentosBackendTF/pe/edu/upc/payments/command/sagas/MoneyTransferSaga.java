@@ -3,11 +3,9 @@ package fundamentosBackendTF.pe.edu.upc.payments.command.sagas;
 
 import fundamentosBackendTF.pe.edu.upc.payments_contracts.commands.CreditAccount;
 import fundamentosBackendTF.pe.edu.upc.payments_contracts.commands.DebitFromAccount;
+import fundamentosBackendTF.pe.edu.upc.payments_contracts.commands.MarkTransferAsCompleted;
 import fundamentosBackendTF.pe.edu.upc.payments_contracts.commands.MarkTransferAsFailed;
-import fundamentosBackendTF.pe.edu.upc.payments_contracts.events.FromAccountDebitFailedDueNoFunds;
-import fundamentosBackendTF.pe.edu.upc.payments_contracts.events.FromAccountNotFound;
-import fundamentosBackendTF.pe.edu.upc.payments_contracts.events.MoneyTransferCreated;
-import fundamentosBackendTF.pe.edu.upc.payments_contracts.events.ToAccountNotFound;
+import fundamentosBackendTF.pe.edu.upc.payments_contracts.events.*;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.modelling.saga.EndSaga;
 import org.axonframework.modelling.saga.SagaEventHandler;
@@ -56,10 +54,10 @@ public class MoneyTransferSaga {
         commandGateway.send(markTransferAsFailed);
     }
 
-    @SagaEventHandler(associationProperty = "paymentId")
     @EndSaga
-    public void on(FromAccountDebitFailedDueNoFunds event) {
-        MarkTransferAsFailed command = new MarkTransferAsFailed(event.getTransactionId());
+    @SagaEventHandler(associationProperty = "paymentId")
+    public void on(ToAccountCredited event) {
+        MarkTransferAsCompleted command = new MarkTransferAsCompleted(event.getTransactionId());
         commandGateway.send(command);
     }
 }
