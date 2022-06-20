@@ -1,13 +1,24 @@
 package fundamentosBackendTF.pe.edu.upc.payments.command.api;
 
+import fundamentosBackendTF.pe.edu.upc.common.api.ApiController;
+import fundamentosBackendTF.pe.edu.upc.common.application.Notification;
+import fundamentosBackendTF.pe.edu.upc.common.application.Result;
 import fundamentosBackendTF.pe.edu.upc.payments.command.application.dto.*;
 
-import fundamentosBackendTF.pe.edu.upc.payments.command.domain.OverdraftLimitExceededException;
-import fundamentosBackendTF.pe.edu.upc.payments_contracts.commands.CreditAccount;
-import fundamentosBackendTF.pe.edu.upc.payments_contracts.commands.DebitAccount;
+import fundamentosBackendTF.pe.edu.upc.payments.command.application.dto.request.EditPaymentRequest;
+import fundamentosBackendTF.pe.edu.upc.payments.command.application.dto.request.OpenPaymentRequest;
+import fundamentosBackendTF.pe.edu.upc.payments.command.application.dto.response.EditPaymentResponse;
 
+import fundamentosBackendTF.pe.edu.upc.payments.command.application.dto.response.OpenPaymentResponse;
+import fundamentosBackendTF.pe.edu.upc.payments.command.application.services.PaymentApplicationService;
+import fundamentosBackendTF.pe.edu.upc.payments.command.domain.OverdraftLimitExceededException;
+
+
+import fundamentosBackendTF.pe.edu.upc.payments_contracts.commands.PostCommand;
+import fundamentosBackendTF.pe.edu.upc.payments_contracts.commands.WithdrawPayment;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.axonframework.modelling.command.AggregateNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -21,14 +32,18 @@ import java.util.concurrent.CompletableFuture;
 @Tag(name="Payments")
 public class PaymentCommandController {
     private final CommandGateway commandGateway;
+    private final PaymentApplicationService paymentApplicationService;
+    public PaymentCommandController(CommandGateway commandGateway,PaymentApplicationService paymentApplicationService){
+        this.commandGateway=commandGateway;
+        this.paymentApplicationService = paymentApplicationService;
 
-    public PaymentCommandController(CommandGateway commandGateway){this.commandGateway=commandGateway;}
-
+    }
+/*
     @PostMapping("/deposit")
     public ResponseEntity<Object>deposit(@Validated @RequestBody DepositMoneyRequestDto depositMoneyRequestDto){
         String transactionId = UUID.randomUUID().toString();
-        CreditAccount command = new CreditAccount(
-          depositMoneyRequestDto.getAccountId(),
+        PostCommand command = new PostCommand(
+          depositMoneyRequestDto.getPostId(),
           transactionId,
           depositMoneyRequestDto.getAmount()
         );
@@ -52,8 +67,8 @@ public class PaymentCommandController {
     @PostMapping("/withdraw")
     public ResponseEntity<Object> withdraw(@Validated @RequestBody WithdrawMoneyRequestDto withdrawMoneyRequestDto) {
         String transactionId = UUID.randomUUID().toString();
-        DebitAccount command = new DebitAccount(
-                withdrawMoneyRequestDto.getAccountId(),
+        WithdrawPayment command = new WithdrawPayment(
+                withdrawMoneyRequestDto.getPostId(),
                 transactionId,
                 withdrawMoneyRequestDto.getAmount()
         );
@@ -77,11 +92,33 @@ public class PaymentCommandController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    /*
-    @DeleteMapping("/{paymentId}")
-    public ResponseEntity<?>deletePayment(@PathVariable("paymentId") String paymentId) throws Exception {
-            return paymentService.delete(paymentId);
+*/
+   @PostMapping("")
+    public ResponseEntity<Object> open(@Validated @RequestBody OpenPaymentRequest openPaymentRequest) {
+     try {
+        Result<OpenPaymentResponse, Notification> result = paymentApplicationService.open(openPaymentRequest);
+        if (result.isSuccess()) {
+            return ApiController.created(result.getSuccess());
+         }
+        return ApiController.error(result.getFailure().getErrors());
+      } catch(Exception e) {
+          return ApiController.serverError();
+      }
+   }
+    @PutMapping("/{paymentId}")
+    public ResponseEntity<Object> edit(@PathVariable("paymentId") String paymentId, @RequestBody EditPaymentRequest editPaymentRequest) {
+        try {
+            editPaymentRequest.setPaymentId(paymentId);
+            Result<EditPaymentResponse, Notification> result = paymentApplicationService.edit(editPaymentRequest);
+            if (result.isSuccess()) {
+                return ApiController.ok(result.getSuccess());
+            }
+            return ApiController.error(result.getFailure().getErrors());
+        } catch (AggregateNotFoundException exception) {
+            return ApiController.notFound();
+        } catch(Exception e) {
+            return ApiController.serverError();
+        }
     }
 
-     */
 }

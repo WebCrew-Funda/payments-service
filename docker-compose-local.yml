@@ -1,0 +1,8 @@
+services:
+  payments-service-deploy:
+    image: payments-service-deploy
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8085:8085

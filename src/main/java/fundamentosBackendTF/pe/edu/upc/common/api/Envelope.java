@@ -1,5 +1,6 @@
 package fundamentosBackendTF.pe.edu.upc.common.api;
 
+import fundamentosBackendTF.pe.edu.upc.common.application.Error;
 import lombok.Value;
 
 import java.util.ArrayList;
@@ -20,11 +21,6 @@ public class Envelope {
         return new Envelope(result, new ArrayList<Error>());
     }
 
-    public static Envelope error(List<Error> errors)
-    {
-        if (errors == null) errors = new ArrayList<>();
-        return new Envelope(null, errors);
-    }
 
     public static Envelope serverError()
     {
@@ -39,6 +35,11 @@ public class Envelope {
         List<Error> errors = new ArrayList<Error>();
         Error error = new Error("entity not found", null);
         errors.add(error);
+        return new Envelope(null, errors);
+    }
+
+    public static Envelope error(List<Error> errors) {
+        if (errors == null) errors = new ArrayList<>();
         return new Envelope(null, errors);
     }
 }

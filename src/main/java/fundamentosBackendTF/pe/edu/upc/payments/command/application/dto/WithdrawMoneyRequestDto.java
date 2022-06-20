@@ -5,11 +5,11 @@ import java.math.BigDecimal;
 
 public class WithdrawMoneyRequestDto {
     @NotNull
-    private String accountId;
+    private String postId;
     private BigDecimal amount;
 
-    public String getAccountId() {
-        return accountId;
+    public String getPostId() {
+        return postId;
     }
 
     public BigDecimal getAmount() {

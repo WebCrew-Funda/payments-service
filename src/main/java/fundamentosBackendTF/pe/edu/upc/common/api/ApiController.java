@@ -1,5 +1,6 @@
 package fundamentosBackendTF.pe.edu.upc.common.api;
 
+import fundamentosBackendTF.pe.edu.upc.common.application.Error;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -14,10 +15,6 @@ public class ApiController {
         return new ResponseEntity(Envelope.ok(result), HttpStatus.CREATED);
     }
 
-    public static ResponseEntity<Object> error(List<Error> errors)
-    {
-        return new ResponseEntity(Envelope.error(errors), HttpStatus.BAD_REQUEST);
-    }
 
     public static ResponseEntity<Object> serverError()
     {
@@ -27,5 +24,9 @@ public class ApiController {
     public static ResponseEntity<Object> notFound()
     {
         return new ResponseEntity(Envelope.notFound(), HttpStatus.NOT_FOUND);
+    }
+
+    public static ResponseEntity<Object> error(List<Error> errors) {
+        return new ResponseEntity(Envelope.error(errors), HttpStatus.BAD_REQUEST);
     }
 }

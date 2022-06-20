@@ -6,10 +6,9 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 import java.math.BigDecimal;
 
 @Value
-public class CreateMoneyTransfer {
+public class PostCommand {
     @TargetAggregateIdentifier
-    private String paymentId;
     private String postId;
-    private BigDecimal number;
-    private BigDecimal overdraftLimit;
+    private String transactionId;
+    private BigDecimal amount;
 }
